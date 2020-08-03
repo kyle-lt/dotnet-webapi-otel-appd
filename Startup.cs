@@ -10,6 +10,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using OpenTelemetry;
+using OpenTelemetry.Trace;
 
 namespace dotnet_webapi_otel_appd
 {
@@ -26,6 +28,26 @@ namespace dotnet_webapi_otel_appd
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+
+            // Add OpenTelemetry Console Exporter
+            services.AddOpenTelemetry((builder) => builder
+                .AddAspNetCoreInstrumentation()
+                .AddHttpClientInstrumentation()
+                .UseConsoleExporter());
+            
+            // Add OpenTelemetry Jaeger Exporter
+            // The below properties are defined in appsettings.json
+            /*
+            services.AddOpenTelemetry((builder) => builder
+                .AddAspNetCoreInstrumentation()
+                .AddHttpInstrumentation()
+                .UseJaegerActivityExporter(o =>
+                {
+                    o.ServiceName = this.Configuration.GetValue<string>("Jaeger:ServiceName");
+                    o.AgentHost = this.Configuration.GetValue<string>("Jaeger:Host");
+                    o.AgentPort = this.Configuration.GetValue<int>("Jaeger:Port");
+                }));
+            */
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
