@@ -1,6 +1,6 @@
 using System;
 
-namespace dotnet_webapi_otel_appd
+namespace dotnet_webapi_otel_appd.Models
 {
     public class WeatherForecast
     {

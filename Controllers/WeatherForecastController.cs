@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using dotnet_webapi_otel_appd.Models;
 
 namespace dotnet_webapi_otel_appd.Controllers
 {
