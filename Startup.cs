@@ -10,8 +10,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+
+// OpenTelemetry Refs
 using OpenTelemetry;
 using OpenTelemetry.Trace;
+using OpenTelemetry.Trace.Samplers;
 
 namespace dotnet_webapi_otel_appd
 {
@@ -29,25 +32,20 @@ namespace dotnet_webapi_otel_appd
         {
             services.AddControllers();
 
-            // Add OpenTelemetry Console Exporter
+            // Add OpenTelemetry Console Exporter & Jaeger Exporter
             services.AddOpenTelemetry((builder) => builder
                 .AddAspNetCoreInstrumentation()
                 .AddHttpClientInstrumentation()
-                .UseConsoleExporter());
-            
-            // Add OpenTelemetry Jaeger Exporter
-            // The below properties are defined in appsettings.json
-            /*
-            services.AddOpenTelemetry((builder) => builder
-                .AddAspNetCoreInstrumentation()
-                .AddHttpInstrumentation()
-                .UseJaegerActivityExporter(o =>
+                .UseConsoleExporter()
+                .UseJaegerExporter(jaeger =>
                 {
-                    o.ServiceName = this.Configuration.GetValue<string>("Jaeger:ServiceName");
-                    o.AgentHost = this.Configuration.GetValue<string>("Jaeger:Host");
-                    o.AgentPort = this.Configuration.GetValue<int>("Jaeger:Port");
-                }));
-            */
+                    jaeger.ServiceName = this.Configuration.GetValue<string>("Jaeger:ServiceName");
+                    jaeger.AgentHost = this.Configuration.GetValue<string>("Jaeger:Host");
+                    jaeger.AgentPort = this.Configuration.GetValue<int>("Jaeger:Port");
+                })
+                .SetSampler(new AlwaysOnSampler())
+                );
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

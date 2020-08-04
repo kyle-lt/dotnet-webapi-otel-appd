@@ -4,6 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+
+// Added in addition to default, above
+using System.Net.Http;
 using dotnet_webapi_otel_appd.Models;
 
 namespace dotnet_webapi_otel_appd.Controllers
@@ -24,9 +27,15 @@ namespace dotnet_webapi_otel_appd.Controllers
             _logger = logger;
         }
 
+        // Adding HTTP Client for example downstream call
+        private static HttpClient httpClient = new HttpClient();
+
         [HttpGet]
         public IEnumerable<WeatherForecast> Get()
         {
+            // Sending example HTTP call to see generated TraceId, SpanId in logs
+            var res = httpClient.GetStringAsync("http://google.com").Result;
+
             var rng = new Random();
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast
             {
